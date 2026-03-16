@@ -1,8 +1,7 @@
 import structlog
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
-from pathlib import Path
+
 
 from app.config import get_settings
 from app.routers.ws import router as ws_router

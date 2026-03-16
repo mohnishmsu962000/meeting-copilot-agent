@@ -38,6 +38,9 @@ async def meeting_websocket(websocket: WebSocket, session_id: str):
                 if data.get("type") != "Results":
                     continue
 
+                if not data.get("is_final"):
+                    continue
+
                 transcript = data.get("channel", {}).get("alternatives", [{}])[0].get("transcript", "")
                 if not transcript.strip():
                     continue

@@ -9,7 +9,9 @@ from app.models.meeting import TranscriptChunk
 logger = structlog.get_logger()
 settings = get_settings()
 
-DEEPGRAM_URL = "wss://api.deepgram.com/v1/listen?model=nova-2&language=en-US&smart_format=true&interim_results=false&utterance_end_ms=1000&vad_events=true&diarize=true"
+
+DEEPGRAM_URL = "wss://api.deepgram.com/v1/listen?model=nova-2&language=en-US&smart_format=true&interim_results=true&utterance_end_ms=1000&vad_events=true&diarize=true"
+
 
 
 class TranscriptManager:
@@ -51,7 +53,13 @@ class TranscriptManager:
 
 async def connect_to_deepgram() -> websockets.WebSocketClientProtocol:
     """Open a raw WebSocket connection to Deepgram."""
-    headers = {"Authorization": f"Token {settings.deepgram_api_key}"}
-    connection = await websockets.connect(DEEPGRAM_URL, extra_headers=headers)
-    logger.info("deepgram_connection_opened")
-    return connection
+    try:
+        connection = await websockets.connect(
+            DEEPGRAM_URL,
+            additional_headers={"Authorization": f"Token {settings.deepgram_api_key}"}
+        )
+        logger.info("deepgram_connection_opened")
+        return connection
+    except websockets.exceptions.InvalidStatus as e:
+        logger.error("deepgram_rejected", status=e.response.status_code, body=e.response.body)
+        raise
