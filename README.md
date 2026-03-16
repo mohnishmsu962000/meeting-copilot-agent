@@ -124,12 +124,3 @@ frontend/
 ```bash
 docker-compose up --build
 ```
-
-## Demo
-
-Record a Loom showing:
-1. Start meeting
-2. Speak for 2-3 minutes
-3. Transcript appearing live on the left
-4. AI suggestions appearing on the right
-5. End meeting → summary screen
